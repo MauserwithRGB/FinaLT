@@ -1,9 +1,21 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <cctype>
 
 class Category; // forward decalaration, because 'Category' is used before it is defined in 'Transactions', line 14
+//FUNCTIONS
+std::string tolowerString(std::string str)
+{
+	for (auto x : str)
+	{
+		x = tolower(x);
+	}
+	
+	return str;
+}
 
+// CLASSES
 class Transactions
 {
 	private:
@@ -14,7 +26,7 @@ class Transactions
 		Category* category;
 		
 	public:
-		Transactions(std::string name, double amount, std::string details/*, Category *category/* , date and time*/) : amount(amount), name(name), details(details)/*, category(category)*/ {}
+		Transactions(std::string name, double amount, std::string details/*, date and time*/) : amount(amount), name(name), details(details)/*, category(category)*/ {}
 		
 		double getAmount()  // in order to updating/editing
 		{
@@ -26,6 +38,7 @@ class Category
 {
 	private:
 		std::string name;
+		std::vector <Transactions*> transactionVctr;  // a vector to store pointers to 'Transactions' objects
 	
 	public:
 		Category(std::string name) : name(name){}
@@ -38,10 +51,10 @@ class Category
 		void addTransaction()
 		{
 			std::string name, details, catName;
-		//	Category* category;
 			double amount;
-			std::cout << "\nEnter the name, amount, details, category";
-			std::cin >> name >> amount >> details/* >> category*/; 
+			
+			std::cout << "\nEnter the name, amount, details";
+			std::cin >> name >> amount >> details; 
 			
 			std::cout << "\nEnter amount: ";
 			std::cin >> amount;
@@ -49,9 +62,7 @@ class Category
 			std::cout << "\nEnter details: ";
 			std::cin >> details;
 			
-			std::cout << "\nEnter category: ";
-			std::cin >> catName;
-//			Transactions* t(name, amount, details, *category);
+//			Transactions* t(name, amount, details);
 		}
 		
 };
@@ -62,8 +73,7 @@ class Budget // for multiple budgets
 		std::string name;
 		double limit;
 //		double daily;  // a daily spending limit calculated using limit and budget duration, exceeding this will cause it  to be recalculated
-//		int duration  // to-do
-		std::vector <Transactions*> transactionVctr;  // a vector to store pointers to 'Transactions' objects
+//		int duration;  // to-do
 		std::vector <Category*> categoryVctr; // a vector to store pointers to 'Category' objects
 		
 	public:
@@ -127,14 +137,27 @@ int main()
 	BudgetManager& manager = BudgetManager::getInstance();  // used a reference because it points to the same instance. Without it, the copy constructor will be invoked, which has been deleted for this class
 	
 	// main menu
-	int choice;
-	std::cout << "1. Add Transaction \t 2. Create a new budget\n";
-	std::cin >> choice;
+	char choice;
+	bool menuFlag = true; // used a flag so that the prgram can be terminated from inside a switch case
 	
-//	switch (choice)
-//	{
-//		case 1:
-//			
-//	}
+	while (menuFlag)
+	{
+		std::cout << "\n1. Create a new transaction \t 2. Create a new category \t 3.  Create a new budget \t 4. Edit a transaction \t 5. Edit a category \t 6. Edit a budget \t 0. Exit the application\n";
+		std::cin >> choice;
+		
+		switch (choice)
+		{
+			case '0': // inverted commas beacause choice is char
+				menuFlag = false;
+				break;
+				
+			case 1:
+				std::string catName;
+				std::cout << "\nEnter category: ";
+				std::cin >> catName;
+				tolowerString(catName);
+						
+		}
+	}
 	
 }
