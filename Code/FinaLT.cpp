@@ -3,6 +3,7 @@
 #include <vector>
 #include <cctype>
 
+class Category; // forward decalaration, because 'Category' is used before it is defined in 'Transactions', line 14
 //FUNCTIONS
 std::string tolowerString(std::string str)
 {
@@ -22,9 +23,10 @@ class Transactions
 		// date and time
 		std::string name;
 		std::string details;
+		Category* category;
 		
 	public:
-		Transactions(std::string name, double amount, std::string details/*, date and time*/) : amount(amount), name(name), details(details) {}
+		Transactions(std::string name, double amount, std::string details/*, date and time*/) : amount(amount), name(name), details(details)/*, category(category)*/ {}
 		
 		double getAmount()  // in order to updating/editing
 		{
@@ -80,26 +82,27 @@ class Budget // for multiple budgets
 	public:
 		Budget(std::string name, double limit) : name(name), limit(limit) {}
 		
+		std::string getName()
+		{
+			return name;
+		}
+		
 		Category* findCategory(std::string catName)  // to search if a category already exists
 		{
 			for (Category* c : categoryVctr)
 			{
 				if (tolowerString(catName) == tolowerString(c->getName()))
-				{
 					return c;
-				}
 			}
 			
 			return nullptr; // not found, i.e; create new category
 		}
 		
 		void addCategory(std::string catName)
-		{
-			Category* catPtr = findCategory(catName);
-			
-			if (catPtr == nullptr)
+		{	
+			if (findCategory(catName) == nullptr)	
 				categoryVctr.push_back(new Category(catName));
-				
+			
 			else
 				std::cout << "\nCategory already exists!";
 		}
@@ -117,17 +120,43 @@ If your code has access to the Singleton class, then it’s able to call the Sin
 class BudgetManager
 {
 	private:
-		BudgetManager() { std::cout << "singleton called\n";};
+		BudgetManager() { std::cout << "Called\n";};
 		std::vector <Budget*> budgetVctr;  // vector to store pointers to 'Budget' objects
 		
 		BudgetManager(const BudgetManager&) = delete;  // deleting copy constructor
 		BudgetManager& operator=(const BudgetManager&) = delete; // deleting assignment operator
 		
 	public:
-		static BudgetManager& getInstance()  // a static mathod to call for instantiation
+		static BudgetManager& getInstance()  // a static mathod to call for
 		{
 			static BudgetManager instance;  // static ensures that its created only once along with the private constructor
 			return instance;
+		}
+		
+		Budget* findBudget(std::string budName)
+		{
+			for (Budget* b : budgetVctr)
+			{
+				if (tolowerString(budName) == tolowerString(b->getName()))
+					return b;
+			}
+			
+			return nullptr;
+		}
+		
+		void addBudget(std::string name)
+		{
+			if (findBudget(name) == nullptr)
+			{
+				double limit;
+				std::cout << "\nEnter budget limit: ";
+				std::cin >> limit;
+				
+				budgetVctr.push_back(new Budget(name, limit));
+			}
+			
+			else
+				std::cout << "\nBudget already exists!";
 		}
 };
 
@@ -152,14 +181,34 @@ int main()
 				menuFlag = false;
 				break;
 				
-			case 1:
-				std:;string budName;
-				std::cout << "\nEnter budget "
-				std::string catName;
-				std::cout << "\nEnter category: ";
-				std::cin >> catName;
-				findCategory(catName);
-						
+			case '1':
+			{
+				std::string budName;
+				std::cout << "\nEnter budget: ";
+				std::cin >> budName;
+				
+				Budget* b = manager.findBudget(budName);
+				if (b != nullptr)
+				{
+					std::string catName;
+			
+					std::cout << "\nEnter category: ";
+					std::cin >> catName;
+				
+					Category* c = b->findCategory(catName);
+					
+					if (c != nullptr)
+					{
+						c->addTransaction();
+					}						
+				
+					else
+						std::cout << "\nCategory not found!";
+				}
+					
+				else
+					std::cout << "\nBudget not found!";
+				}
 		}
 	}
 	
