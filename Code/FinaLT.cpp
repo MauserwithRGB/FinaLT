@@ -7,7 +7,7 @@ class Category; // forward decalaration, because 'Category' is used before it is
 //FUNCTIONS
 std::string tolowerString(std::string str)
 {
-	for (auto x : str)
+	for (auto& x : str)
 	{
 		x = tolower(x);
 	}
@@ -55,8 +55,8 @@ class Category
 			std::string name, details, catName;
 			double amount;
 			
-			std::cout << "\nEnter the name, amount, details";
-			std::cin >> name >> amount >> details; 
+			std::cout << "\nEnter the name";
+			std::cin >> name; 
 			
 			std::cout << "\nEnter amount: ";
 			std::cin >> amount;
@@ -64,7 +64,9 @@ class Category
 			std::cout << "\nEnter details: ";
 			std::cin >> details;
 			
-//			Transactions* t(name, amount, details);
+			Transactions* t = new Transactions(name, amount, details);
+			
+			transactionVctr.push_back(t); // DO NOT FORGET TO USE DELETE
 		}
 		
 //		void deleteTransaction() 
@@ -156,7 +158,7 @@ class BudgetManager
 			}
 			
 			else
-				std::cout << "\nBudget already exists!";
+				std::cout << "\nBudget already exists!";  // i may need to remove this if else checking because its not this methods job
 		}
 };
 
@@ -172,6 +174,7 @@ int main()
 	
 	while (menuFlag)
 	{
+		// editing might or  might not be edited. lets see what time says...
 		std::cout << "\n1. Create a new transaction \t 2. Create a new category \t 3.  Create a new budget \t 4. Edit a transaction \t 5. Edit a category \t 6. Edit a budget \t 0. Exit the application\n";
 		std::cin >> choice;
 		
@@ -209,6 +212,48 @@ int main()
 				else
 					std::cout << "\nBudget not found!";
 				}
+				
+			case '2':
+			{
+				std::string budName;
+				std::cout << "\nEnter budget: ";
+				std::cin >> budName;
+				
+				Budget* b = manager.findBudget(budName);
+				if (b != nullptr)
+				{
+					std::string catName;
+			
+					std::cout << "\nEnter category: ";
+					std::cin >> catName;
+				
+					Category* c = b->findCategory(catName);
+					
+					if (c == nullptr)
+						b->addCategory(catName);
+					
+					else
+						std::cout << "\nCategory already exists!";						
+				}
+					
+				else
+					std::cout << "\nBudget not found!";
+			}
+			
+			case '3':
+			{
+				std::string budName;
+				std::cout << "\nEnter budget: ";
+				std::cin >> budName;
+				
+				Budget* b = manager.findBudget(budName);
+				
+				if (b == nullptr)
+					manager.addBudget(budName);
+					
+				else if (b != nullptr)
+					std::cout << "\nBudget already exists!";
+			}
 		}
 	}
 	
