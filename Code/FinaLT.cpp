@@ -52,7 +52,7 @@ class Category
 		
 		void addTransaction()
 		{
-			std::string name, details, catName;
+			std::string name, details;
 			double amount;
 			
 			std::cout << "\nEnter the name";
