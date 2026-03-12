@@ -23,10 +23,9 @@ class Transactions
 		// date and time
 		std::string name;
 		std::string details;
-		Category* category;
 		
 	public:
-		Transactions(std::string name, double amount, std::string details/*, date and time*/) : amount(amount), name(name), details(details)/*, category(category)*/ {}
+		Transactions(std::string name, double amount, std::string details/*, date and time*/) : amount(amount), name(name), details(details) {}
 		
 		double getAmount()  // in order to updating/editing
 		{
@@ -55,13 +54,13 @@ class Category
 			std::string name, details;
 			double amount;
 			
-			std::cout << "\nEnter the name";
+			std::cout << "\nEnter the name" << std::endl;
 			std::cin >> name; 
 			
-			std::cout << "\nEnter amount: ";
+			std::cout << "\nEnter amount: " << std::endl;
 			std::cin >> amount;
 			
-			std::cout << "\nEnter details: ";
+			std::cout << "\nEnter details: " << std::endl;
 			std::cin >> details;
 			
 			Transactions* t = new Transactions(name, amount, details);
@@ -187,7 +186,7 @@ int main()
 			case '1':
 			{
 				std::string budName;
-				std::cout << "\nEnter budget: ";
+				std::cout << "Enter budget: " << std::endl;
 				std::cin >> budName;
 				
 				Budget* b = manager.findBudget(budName);
@@ -195,7 +194,7 @@ int main()
 				{
 					std::string catName;
 			
-					std::cout << "\nEnter category: ";
+					std::cout << "Enter category: " << std::endl;
 					std::cin >> catName;
 				
 					Category* c = b->findCategory(catName);
@@ -211,12 +210,13 @@ int main()
 					
 				else
 					std::cout << "\nBudget not found!";
-				}
+			}
+			break;
 				
 			case '2':
 			{
 				std::string budName;
-				std::cout << "\nEnter budget: ";
+				std::cout << "\nEnter budget: " << std::endl;
 				std::cin >> budName;
 				
 				Budget* b = manager.findBudget(budName);
@@ -224,7 +224,7 @@ int main()
 				{
 					std::string catName;
 			
-					std::cout << "\nEnter category: ";
+					std::cout << "\nEnter category: " << std::endl;
 					std::cin >> catName;
 				
 					Category* c = b->findCategory(catName);
@@ -239,11 +239,12 @@ int main()
 				else
 					std::cout << "\nBudget not found!";
 			}
+			break;
 			
 			case '3':
 			{
 				std::string budName;
-				std::cout << "\nEnter budget: ";
+				std::cout << "\nEnter budget: " << std::endl;
 				std::cin >> budName;
 				
 				Budget* b = manager.findBudget(budName);
@@ -254,6 +255,10 @@ int main()
 				else if (b != nullptr)
 					std::cout << "\nBudget already exists!";
 			}
+			break;
+			
+			default:
+				std::cout << "\nINVALID INPUT!";
 		}
 	}
 	
