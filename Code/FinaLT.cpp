@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <cctype>
+#include <algorithm>
 
 class Category; // forward decalaration, because 'Category' is used before it is defined in 'Transactions', line 14
 //FUNCTIONS
@@ -31,6 +32,11 @@ class Transactions
 		{
 			return amount;
 		}
+		
+		std::string getName()
+		{
+			return name;
+		}
 };
 
 class Category
@@ -47,7 +53,13 @@ class Category
 			return name;
 		}
 		
-//		void listTransactions()
+		void listTransactions()
+		{
+			for (auto x : transactionVctr)
+			{
+				std::cout << x->getName() << "\n";
+			}
+		}
 		
 		void addTransaction()
 		{
@@ -68,7 +80,24 @@ class Category
 			transactionVctr.push_back(t); // DO NOT FORGET TO USE DELETE
 		}
 		
-//		void deleteTransaction() 
+		Transactions* findTransaction(std::string name)  // to search if a category already exists
+		{
+			for (Transactions* t : transactionVctr)
+			{
+				if (tolowerString(name) == tolowerString(t->getName()))
+					return t;
+			}
+			
+			return nullptr; // not found, i.e; create new category
+		}
+		
+		void deleteTransaction(Transactions* t)
+		{
+			transactionVctr.erase(std::remove(transactionVctr.begin(), transactionVctr.end(), t), transactionVctr.end());
+			
+			delete t;
+			
+		}
 };
 
 class Budget // for multiple budgets
@@ -174,8 +203,8 @@ int main()
 	while (menuFlag)
 	{
 		// editing might or  might not be edited. lets see what time says...
-		std::cout << "\n1. Create a new transaction \t 2. Create a new category \t 3.  Create a new budget \t 4. Edit a transaction \t 5. Edit a category \t 6. Edit a budget \t 0. Exit the application\n";
-		std::cin >> choice;
+		std::cout << "\n1. Create a new transaction \t 2. Create a new category \t 3.  Create a new budget \t 4. Edit a transaction \t 5. Edit a category \t 6. Edit a budget \t 7. Delete a transaction \t 0. Exit the application\n";
+		std::cin >> choice; // needs input validation: If the user enters more than one character then throw an errorr
 		
 		switch (choice)
 		{
@@ -186,7 +215,7 @@ int main()
 			case '1':
 			{
 				std::string budName;
-				std::cout << "Enter budget: " << std::endl;
+				std::cout << "\nEnter budget: " << std::endl;
 				std::cin >> budName;
 				
 				Budget* b = manager.findBudget(budName);
@@ -194,7 +223,7 @@ int main()
 				{
 					std::string catName;
 			
-					std::cout << "Enter category: " << std::endl;
+					std::cout << "\nEnter category: " << std::endl;
 					std::cin >> catName;
 				
 					Category* c = b->findCategory(catName);
@@ -254,6 +283,45 @@ int main()
 					
 				else if (b != nullptr)
 					std::cout << "\nBudget already exists!";
+			}
+			break;
+			
+			case '7':
+			{
+				std::string budName;
+				std::cout << "\nEnter budget: " << std::endl;
+				std::cin >> budName;
+				
+				Budget* b = manager.findBudget(budName);
+				if (b != nullptr)
+				{
+					std::string catName;
+			
+					std::cout << "\nEnter category: " << std::endl;
+					std::cin >> catName;
+				
+					Category* c = b->findCategory(catName);
+					
+					if (c != nullptr)
+					{
+						c->listTransactions();
+						
+						std::string name;
+						std::cout << "\nEnter transaction name: ";
+						std::cin >> name;
+						
+						Transactions* t = c->findTransaction(name);
+						c->deleteTransaction(t);
+						
+						c->listTransactions(); // Just to make sure that transaction gets deleted  !!!REMOVE LATER!!!
+					}
+					
+					else
+						std::cout << "\nCategory does not exist!";						
+				}
+					
+				else
+					std::cout << "\nBudget does not exist!";
 			}
 			break;
 			
